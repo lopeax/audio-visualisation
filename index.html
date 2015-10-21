@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Music Testing</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+        <audio id="audio" controls>
+            <source src="ogg/dunderpatrullen/singularity.ogg" type="audio/ogg">
+            <source src="mp3/dunderpatrullen/singularity.mp3" type="audio/mp3">
+        </audio>
+        <canvas id="canvas" width="320" height="320"></canvas>
+        <!-- <script src="js/jquery-2.1.4.min.js"></script> -->
+        <script type="text/javascript">
+            function listToMatrix(list, elementsPerSubArray) {
+                var matrix = [], i, k;
+
+                for (i = 0, k = -1; i < list.length; i++) {
+                    if (i % elementsPerSubArray === 0) {
+                        k++;
+                        matrix[k] = [];
+                    }
+
+                    matrix[k].push(list[i]);
+                }
+
+                return matrix;
+            }
+
+            window.onload = function(){
+                var canvas = document.getElementById('canvas');
+                var ctx = canvas.getContext('2d');
+                var sep = 32;
+                var w = canvas.width / sep;
+                var h = canvas.height / sep;
+
+                //Get audio context ready
+                var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                var audio = document.getElementById('audio');
+                var audioSrc = audioCtx.createMediaElementSource(audio);
+                var analyser = audioCtx.createAnalyser();
+
+                //Connect the analyser to the audio
+                audioSrc.connect(analyser);
+                analyser.connect(audioCtx.destination);
+
+                //Get the data to parse
+                var frequencyData = new Uint8Array(analyser.frequencyBinCount);
+
+                //Ready to parse data inside here!
+                function renderFrame() {
+                    if(!audio.paused){
+                        requestAnimationFrame(renderFrame);
+                        analyser.getByteFrequencyData(frequencyData);
+                        var data = listToMatrix(frequencyData,sep);
+                        // var max = Math.max.apply(Math,frequencyData);
+                        // var i = 0;
+                        for (var y = 0; y < data.length; y++) {
+                            for (var x = 0; x < data[y].length; x++) {
+                                ctx.clearRect(x*w,y*h,w,h);
+                                // ctx.fillStyle='rgba('+Math.floor(Math.random() * 255)+','+Math.floor(Math.random() * 255)+','+Math.floor(Math.random() * 255)+','+(data[y][x]/255)+')';
+                                // ctx.fillStyle='rgba('+(i*w/(255/32))+','+(i*w/(255/32))+','+(i*w/(255/32))+','+(data[y][x]/255)+')';
+                                ctx.fillStyle='rgba(0,0,0,'+(data[y][x]/255)+')';
+                                ctx.fillRect(x*w,y*h,w,h);
+                                // i++;
+                            }
+                        }
+                    }
+                }
+
+                //Set parse when the audio is playing
+                audio.addEventListener('play', function(){
+                    renderFrame();
+                });
+            };
+        </script>
+    </body>
+</html>
