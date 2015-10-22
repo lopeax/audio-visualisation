@@ -4,74 +4,238 @@
         <meta charset="utf-8">
         <title>Music Testing</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href='https://fonts.googleapis.com/css?family=Raleway:300,400' rel='stylesheet subresource' type='text/css'>
+        <style media="screen">
+            html,
+            body {
+                background: #E3E3E3;
+                height: 100%;
+                margin: 0;
+                overflow-x: hidden;
+                width: 100%;
+            }
+
+
+            *,
+            *:after,
+            *:before {
+                box-sizing: border-box;
+                -webkit-transition: background 0.3s, border-color 0.3s, box-shadow 0.3s, color 0.3s, margin-top 0.3s;
+                transition: background 0.3s, border-color 0.3s, box-shadow 0.3s, color 0.3s, margin-top 0.3s;
+            }
+
+            .card {
+                background: #FBFBFB;
+                border-radius: 0.15em;
+                box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+                float: left;
+                font-family: 'Raleway', sans-serif;
+                font-size: 16px;
+                left: 50%;
+                letter-spacing: 1px;
+                margin: 0 auto;
+                padding: 24px 32px;
+                position: relative;
+                text-align: center;
+                top: 50%;
+                -webkit-transform: translateY(-50%) translateX(-50%);
+                        transform: translateY(-50%) translateX(-50%);
+                width: 320px;
+            }
+            .card h1 {
+                color: #111111;
+                font-size: 24px;
+                font-weight: 400;
+                margin: 8px 0 24px 0;
+                text-align: center;
+            }
+            .card p {
+                color: #303030;
+                font-weight: 300;
+                line-height: 24px;
+                margin: 8px 0 24px 0;
+                text-align: center;
+            }
+            .card:hover {
+                background: #FFFFFF;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            }
+
+            .card .canvas,
+            .card canvas {
+                float: left;
+                position: relative;
+            }
+            .card .canvas {
+                -webkit-transform: rotate(180deg);
+                        transform: rotate(180deg);
+            }
+
+            .card .canvas .overlay {
+                background: rgba(0, 0, 0, 0.2);
+                cursor: pointer;
+                height: 100%;
+                left: 0;
+                position: absolute;
+                top: 0;
+                -webkit-transform: rotate(180deg);
+                        transform: rotate(180deg);
+                -webkit-transition: all 0.3s;
+                        transition: all 0.3s;
+                width: 100%;
+            }
+            .card .canvas .overlay:after,
+            .card .canvas .overlay:before {
+                content: '';
+                left: 50%;
+                position: absolute;
+                top: 50%;
+            }
+            .card .canvas .overlay:after {
+                border: 50px solid transparent;
+                border-left-color: rgba(0, 0, 0, 0.2);
+                border-left-width: 75px;
+                box-sizing: content-box;
+                height: 0;
+                -webkit-transform: translate(-25px, -50px);
+                        transform: translate(-25px, -50px);
+                -webkit-transition: border-left-color 0.3s;
+                        transition: border-left-color 0.3s;
+                width: 0;
+            }
+            .card .canvas .overlay:before {
+                border: 10px solid rgba(0, 0, 0, 0.2);
+                border-radius: 100%;
+                height: 140px;
+                -webkit-transform: translate(-50%, -50%);
+                        transform: translate(-50%, -50%);
+                -webkit-transition: all 0.3s;
+                        transition: all 0.3s;
+                width: 140px;
+            }
+
+            .card .canvas .overlay[playing='playing']:after,
+            .card .canvas .overlay:hover:after {
+                border-left-color: rgba(0, 0, 0, 0.1);
+            }
+            .card .canvas .overlay[playing='playing']:before,
+            .card .canvas .overlay:hover:before {
+                border-color: rgba(0, 0, 0, 0.1);
+            }
+            .card .canvas .overlay[playing='playing'] {
+                opacity: 0;
+            }
+            .card .canvas .overlay[playing='playing']:hover {
+                opacity: 1;
+            }
+            .card .canvas .overlay[playing='playing']:after {
+                border-right-color: rgba(0, 0, 0, 0.1);
+                border-width: 10px;
+                height: 80px;
+                width: 30px;
+            }
+
+        </style>
     </head>
     <body>
-        <audio id="audio" controls>
-            <source src="ogg/dunderpatrullen/singularity.ogg" type="audio/ogg">
-            <source src="mp3/dunderpatrullen/singularity.mp3" type="audio/mp3">
-        </audio>
-        <canvas id="canvas" width="320" height="320"></canvas>
-        <!-- <script src="js/jquery-2.1.4.min.js"></script> -->
+        <div class="card">
+            <h1>Audio Visualisation</h1>
+            <p>Click play to watch the magic happen!</p>
+            <audio crossorigin="anonymous" id="mp3">
+                <!-- Use Responsibly! Don't hammer my server or I'll need to take these down :( it's purely for testing this out! -->
+                <!-- Audio file can be any audio format, but needs to allow all origins for CORS :) -->
+
+                <!-- Singularity by Dunderpatrullen -->
+                <!-- <source src="mp3/dunderpatrullen/singularity.mp3" type="audio/mp3"/> -->
+
+                <!-- Bit Rush by League of Legends -->
+                <!-- <source src="mp3/lol/bit-rush.mp3" type="audio/mp3"/> -->
+
+                <!-- World's Collide by League of Legends -->
+                <!-- <source src="mp3/lol/worlds-collide.mp3" type="audio/mp3"/> -->
+
+                <!-- Find more music on https://archive.org/ -->
+
+                <!-- Thunderstruck by AC/DC -->
+                <!-- <source src="mp3/acdc/thunderstruck.mp3" type="audio/mp3"/> -->
+
+                <!-- Canon Rock by JerryC -->
+                <source src="mp3/jerryc/canon-rock.mp3" type="audio/mp3"/>
+            </audio>
+            <div class="canvas">
+                <canvas id="canvas" width="256" height="256"></canvas>
+                <div class="overlay" id="play"></div>
+            </div>
+        </div>
         <script type="text/javascript">
             function listToMatrix(list, elementsPerSubArray) {
-                var matrix = [], i, k;
-
+                var matrix = [],
+                    i, k;
                 for (i = 0, k = -1; i < list.length; i++) {
                     if (i % elementsPerSubArray === 0) {
                         k++;
                         matrix[k] = [];
                     }
-
                     matrix[k].push(list[i]);
                 }
-
                 return matrix;
             }
-
-            window.onload = function(){
+            window.onload = function() {
                 var canvas = document.getElementById('canvas');
                 var ctx = canvas.getContext('2d');
                 var sep = 32;
                 var w = canvas.width / sep;
                 var h = canvas.height / sep;
-
+                var filter = 75;
                 //Get audio context ready
-                var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                var audio = document.getElementById('audio');
+                var audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                var audio = document.getElementById('mp3');
                 var audioSrc = audioCtx.createMediaElementSource(audio);
                 var analyser = audioCtx.createAnalyser();
-
                 //Connect the analyser to the audio
                 audioSrc.connect(analyser);
                 analyser.connect(audioCtx.destination);
-
                 //Get the data to parse
                 var frequencyData = new Uint8Array(analyser.frequencyBinCount);
-
                 //Ready to parse data inside here!
                 function renderFrame() {
-                    if(!audio.paused){
+                    if (!audio.paused) {
                         requestAnimationFrame(renderFrame);
                         analyser.getByteFrequencyData(frequencyData);
-                        var data = listToMatrix(frequencyData,sep);
-                        // var max = Math.max.apply(Math,frequencyData);
-                        // var i = 0;
+                        var data = listToMatrix(frequencyData, sep);
                         for (var y = 0; y < data.length; y++) {
                             for (var x = 0; x < data[y].length; x++) {
-                                ctx.clearRect(x*w,y*h,w,h);
-                                // ctx.fillStyle='rgba('+Math.floor(Math.random() * 255)+','+Math.floor(Math.random() * 255)+','+Math.floor(Math.random() * 255)+','+(data[y][x]/255)+')';
-                                // ctx.fillStyle='rgba('+(i*w/(255/32))+','+(i*w/(255/32))+','+(i*w/(255/32))+','+(data[y][x]/255)+')';
-                                ctx.fillStyle='rgba(0,0,0,'+(data[y][x]/255)+')';
-                                ctx.fillRect(x*w,y*h,w,h);
-                                // i++;
+                                var alpha = data[y][x];
+                                if((alpha - filter) > 0){
+                                    alpha = (alpha - filter) / 255;
+                                } else {
+                                    alpha = 0;
+                                }
+                                ctx.clearRect(x * w, y * h, w, h);
+                                ctx.fillStyle = 'rgba(0,136,204,' + alpha + ')';
+                                ctx.fillRect(x * w, y * h, w, h);
                             }
                         }
                     }
                 }
-
                 //Set parse when the audio is playing
-                audio.addEventListener('play', function(){
+                audio.addEventListener('play', function() {
                     renderFrame();
+                });
+                var playing = false;
+                var play = document.getElementById('play');
+                var ua = navigator.userAgent;
+                var events = (ua.match(/iPad/i)) ? 'touchstart' : 'click';
+                play.addEventListener(events,function(){
+                    if(playing){
+                        audio.pause();
+                        playing = false;
+                        play.removeAttribute('playing');
+                    } else {
+                        audio.play();
+                        playing = true;
+                        play.setAttribute('playing','playing');
+                    }
                 });
             };
         </script>
