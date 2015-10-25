@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <title>Music Testing</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="This is an audio visualisation project suitable for chrome and firefox.">
         <link href='https://fonts.googleapis.com/css?family=Raleway:300,400' rel='stylesheet subresource' type='text/css'>
         <style media="screen">
             html,
@@ -36,26 +37,30 @@
                 background: #FBFBFB;
                 border-radius: 0.15em;
                 box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+                clear: both;
                 float: left;
                 font-family: 'Raleway', sans-serif;
                 font-size: 16px;
                 left: 50%;
                 letter-spacing: 1px;
-                margin: 0 auto;
+                margin: 20px auto 0 auto;
                 padding: 24px 32px;
                 position: relative;
                 text-align: center;
-                top: 50%;
-                -webkit-transform: translateY(-50%) translateX(-50%);
-                        transform: translateY(-50%) translateX(-50%);
+                -webkit-transform: translateX(-50%);
+                        transform: translateX(-50%);
                 width: 320px;
             }
-            .card h1 {
+            .card h1,
+            .card h2 {
                 color: #111111;
                 font-size: 24px;
                 font-weight: 400;
                 margin: 8px 0 24px 0;
                 text-align: center;
+            }
+            .card h2 {
+                font-size: 20px;
             }
             .card p {
                 color: #303030;
@@ -75,6 +80,7 @@
                 position: relative;
             }
             .card .canvas {
+                margin-bottom: 10px;
                 -webkit-transform: rotate(180deg);
                         transform: rotate(180deg);
             }
@@ -143,11 +149,75 @@
                 width: 30px;
             }
 
+            .card .canvas input[type=range] {
+                -webkit-appearance: none;
+                margin: 0;
+                opacity: 0;
+                padding: 10px 0;
+                position: absolute;
+                -webkit-transform-origin: 0 0 0;
+                transform-origin: 0 0 0;
+                -webkit-transition: all 0.3s;
+                transition: all 0.3s;
+                width: 100%;
+            }
+            .card .canvas input[type=range]:focus,
+            .card .canvas .overlay:hover ~ input[type=range],
+            .card .canvas input[type=range]:hover {
+                opacity: 1;
+            }
+            .card .canvas input[type=range]#volume {
+                right: 0;
+                top: 0;
+                -webkit-transform: rotate(90deg);
+                        transform: rotate(90deg);
+            }
+            .card .canvas input[type=range]#buffer {
+                left: 0;
+                bottom: calc(100% + 10px);
+            }
+            .card .canvas input[type=range]:focus {
+                outline: none;
+            }
+            .card .canvas input[type=range]::-webkit-slider-runnable-track {
+                animation: 0.3s;
+                background: rgba(0, 0, 0, 0.2);
+                border-radius: 1em;
+                cursor: pointer;
+                height: 10px;
+                width: 100%;
+            }
+            .card .canvas input[type=range]::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                background: #999;
+                box-shadow: 0 0 4px rgba(0,0,0,0.4);
+                border-radius: 100%;
+                cursor: pointer;
+                height: 16px;
+                margin-top: -3px;
+                width: 16px;
+            }
+            .card .canvas input[type=range]::-moz-range-track {
+                animation: 0.3s;
+                background: rgba(0, 0, 0, 0.2);
+                border-radius: 1em;
+                cursor: pointer;
+                height: 10px;
+                width: 100%;
+            }
+            .card .canvas input[type=range]::-moz-range-thumb {
+                background: #999;
+                box-shadow: 0 0 4px rgba(0,0,0,0.4);
+                border-radius: 100%;
+                cursor: pointer;
+                height: 16px;
+                width: 16px;
+            }
+
             .card .tracks {
                 position: relative;
                 float: left;
                 width: 100%;
-                margin-top: 32px;
             }
             .card .tracks .track {
                 color: #303030;
@@ -200,7 +270,12 @@
                 <audio crossorigin="anonymous" id="mp3" src="mp3/jerryc/canon-rock.mp3"></audio>
                 <canvas id="canvas" width="256" height="256"></canvas>
                 <div class="overlay" id="play"></div>
+                <input type="range" name="volume" id="volume" value="100">
+                <!-- <input type="range" name="buffer" id="buffer"> -->
             </div>
+        </div>
+        <div class="card">
+            <h2>Sample Tracks</h2>
             <div class="tracks">
                 <div audio-src="mp3/jerryc/canon-rock.mp3" class="track">
                     Canon Rock by JerryC
@@ -219,6 +294,7 @@
                 </div>
             </div>
         </div>
+        <script src="http://cdn.zekken.rocks/js/addons/browser.min.js" charset="utf-8"></script>
         <script type="text/javascript">
             function listToMatrix(list, elementsPerSubArray) {
                 var matrix = [],
@@ -302,6 +378,12 @@
                         playing = true;
                         play.setAttribute('playing','playing');
                     }
+                });
+                document.getElementById('volume').addEventListener('input',function(){
+                    audio.volume = this.value / 100;
+                });
+                document.getElementById('volume').addEventListener('change',function(){
+                    audio.volume = this.value / 100;
                 });
             };
         </script>
